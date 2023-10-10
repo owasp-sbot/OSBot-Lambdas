@@ -8,6 +8,7 @@ runs:
     - name: Checkout code
       uses: actions/checkout@v3
       with:
+        ref        : 'main'   # Check out the 'main' branch
         fetch-depth: 0
 
     - name: Set up Git user
