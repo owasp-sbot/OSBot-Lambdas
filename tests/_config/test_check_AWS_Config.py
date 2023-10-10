@@ -1,10 +1,9 @@
 from unittest import TestCase
 
-from dotenv import load_dotenv
-from osbot_aws.AWS_Config import AWS_Config
-from osbot_aws.apis.S3 import S3
-from osbot_aws.apis.STS import STS
-from osbot_utils.utils.Dev import pprint
+from dotenv                 import load_dotenv
+from osbot_aws.AWS_Config   import AWS_Config
+from osbot_aws.apis.S3      import S3
+from osbot_aws.apis.STS     import STS
 
 OSBOT_AWS_ACCOUNT_ID     = '470426667096'
 OSBOT_AWS_DEFAULT_REGION = 'eu-west-2'
