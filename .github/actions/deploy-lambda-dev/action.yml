@@ -1,0 +1,31 @@
+name: 'Deploy Lambda - DEV'
+description: 'Deploys lambda'
+
+inputs:
+  aws_access_key_id:
+    description: 'AWS Account KEY ID'
+    required: true
+  aws_secret_access_key:
+    description: 'AWS Secret Access Key'
+    required: true
+  aws_default_region:
+    description: 'AWS Default region'
+    required: true
+  aws_account_id:
+    description: 'AWS Account ID'
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - name: deploy lambda
+      shell: bash
+      run: | 
+        echo "Deploying lambda function"        
+        python ./deploy_lambda_dev.py
+      env:
+        AWS_SECRET_ACCESS_KEY: ${{ inputs.aws_secret_access_key }}
+        AWS_DEFAULT_REGION   : ${{ inputs.aws_default_region    }}
+        AWS_ACCOUNT_ID       : ${{ inputs.aws_account_id        }}
+        AWS_ACCESS_KEY_ID    : ${{ inputs.aws_access_key_id     }}
+
