@@ -3,9 +3,10 @@ from unittest import TestCase
 from dotenv import load_dotenv
 from osbot_aws.deploy.Deploy_Lambda import Deploy_Lambda
 
-from osbot_lambdas.hello_world.handler import run
+from osbot_lambdas.requests_get.handler import run
 
-class test_hello_world(TestCase):
+
+class test_requests_get(TestCase):
 
 
     def setUp(self) -> None:
@@ -14,14 +15,11 @@ class test_hello_world(TestCase):
         self.deploy_lambda = Deploy_Lambda(run)
 
     def test_invoke_directly(self):
-        assert self.handler_run({}) == 'hello world!'
+        assert self.handler_run({}) == 'requests get'
 
     def test_deploy_lambda_function(self):
         assert self.deploy_lambda.update() == 'Successful'
         self.test_invoke_lambda_function()
 
     def test_invoke_lambda_function(self):
-        assert self.deploy_lambda.invoke() == 'hello world!'                    # without params
-
-        event = {'name':'AAA'}
-        assert self.deploy_lambda.invoke(event) == 'hello AAA!'               # with params
+        assert self.deploy_lambda.invoke() == 'requests get'
