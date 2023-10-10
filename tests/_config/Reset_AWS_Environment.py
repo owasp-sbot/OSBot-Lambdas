@@ -13,7 +13,7 @@ class Reset_AWS_Environment:
         print()
 
     def delete_lambda_function(self, function_name):
-        result = Lambda().delete()
+        result = Lambda(function_name).delete()
         if result:
             print(f" - {function_name}:deleted OK")
         else:
