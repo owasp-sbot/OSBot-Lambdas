@@ -25,6 +25,7 @@ runs:
         shell: bash
         run: |
           coverage run --source=osbot_lambdas -m pytest -v -s --durations=0 --ignore=tests_* tests
+          python ./tests/_config/Reset_AWS_Environment.py
         env:
           AWS_SECRET_ACCESS_KEY: ${{ inputs.aws_secret_access_key }}
           AWS_DEFAULT_REGION   : ${{ inputs.aws_default_region    }}
