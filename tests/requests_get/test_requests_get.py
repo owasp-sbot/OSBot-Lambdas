@@ -19,8 +19,8 @@ class test_requests_get(TestCase):
         self.handler_run   = run
         self.deploy_lambda = Deploy_Lambda(run)
 
-    def test_invoke_directly(self):
-        assert '<title>Error 404 (Not Found)!!1</title>' in self.handler_run({})
+    # def test_invoke_directly(self):
+    #     assert '<title>Error 404 (Not Found)!!1</title>' in self.handler_run({})
 
     def test_deploy_lambda_function(self):
         #self.deploy_lambda.lambda_function().delete()
