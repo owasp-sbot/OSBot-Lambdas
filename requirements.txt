@@ -1,9 +1,9 @@
 # OSBot
-git+https://github.com/owasp-sbot/OSBot-Utils.git@develop
+git+https://github.com/owasp-sbot/OSBot-Utils.git@dev
 git+https://github.com/owasp-sbot/OSBot-AWS.git@dev
 
 # utils
-python-dotenv==1.0.0
+python-dotenv
 
 # aws
 boto3
