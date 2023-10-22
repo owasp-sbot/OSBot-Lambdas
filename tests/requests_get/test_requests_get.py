@@ -1,13 +1,6 @@
-from unittest import TestCase
-
-from dotenv import load_dotenv
-from osbot_utils.testing.Duration import Duration
-
-from osbot_aws.Dependencies import pip_install_dependency
-from osbot_aws.deploy.Deploy_Lambda import Deploy_Lambda
-from osbot_aws.helpers.Lambda_Layer_Create import Lambda_Layer_Create
-from osbot_utils.utils.Dev import pprint
-
+from unittest                           import TestCase
+from dotenv                             import load_dotenv
+from osbot_aws.deploy.Deploy_Lambda     import Deploy_Lambda
 from osbot_lambdas.requests_get.handler import run
 
 

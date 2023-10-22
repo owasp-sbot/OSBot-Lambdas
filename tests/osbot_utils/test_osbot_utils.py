@@ -1,12 +1,7 @@
-from unittest import TestCase
-from dotenv import load_dotenv
-from osbot_utils.utils.Json import json_parse, json_loads
-
-from osbot_utils.utils.Dev import pprint
-
-from osbot_aws.deploy.Deploy_Lambda import Deploy_Lambda
-
-from osbot_lambdas.osbot_utils.handler import run
+from unittest                           import TestCase
+from dotenv                             import load_dotenv
+from osbot_aws.deploy.Deploy_Lambda     import Deploy_Lambda
+from osbot_lambdas.osbot_utils.handler  import run
 
 class test_requests_get(TestCase):
 

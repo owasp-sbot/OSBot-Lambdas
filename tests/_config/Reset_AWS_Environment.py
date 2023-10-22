@@ -1,4 +1,7 @@
 import sys
+
+from osbot_aws.apis.shell.Lambda_Shell import Lambda_Shell
+
 sys.path.append('.')
 
 from osbot_aws.apis.Lambda import Lambda
@@ -24,6 +27,14 @@ class Reset_AWS_Environment:
         else:
             print(f" - {function_name}: Not deleted")
 
+    def delete_secrets(self):
+        lambda_shell_secret = Lambda_Shell().secret
+        if lambda_shell_secret.exists():
+            assert lambda_shell_secret.delete_no_recovery() is True
+            print(f" - deleted {lambda_shell_secret}")
+
 
 if __name__ == '__main__':
-    Reset_AWS_Environment().delete_lambda_functions()
+    reset_aws_environment = Reset_AWS_Environment()
+    reset_aws_environment.delete_lambda_functions()
+    reset_aws_environment.delete_secrets()
