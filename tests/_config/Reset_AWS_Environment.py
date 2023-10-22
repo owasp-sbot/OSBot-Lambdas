@@ -8,6 +8,7 @@ from osbot_aws.apis.Lambda import Lambda
 from osbot_lambdas.hello_world .handler import run as handler__hello_world
 from osbot_lambdas.requests_get.handler import run as handler__requests_get
 from osbot_lambdas.osbot_utils .handler import run as handler__osbot_utils
+from osbot_lambdas.lambda_shell.handler import run as handler__lambda_shell
 
 
 class Reset_AWS_Environment:
@@ -17,6 +18,7 @@ class Reset_AWS_Environment:
         self.delete_lambda_function(handler__hello_world )
         self.delete_lambda_function(handler__requests_get)                  # todo - add layer deletion too
         self.delete_lambda_function(handler__osbot_utils )                  # todo - add layer deletion too
+        self.delete_lambda_function(handler__lambda_shell)
         print()
 
     def delete_lambda_function(self, handler):
