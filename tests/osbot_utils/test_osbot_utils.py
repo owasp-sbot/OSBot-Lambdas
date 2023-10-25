@@ -5,6 +5,9 @@ from osbot_lambdas.osbot_utils.handler  import run
 
 class test_requests_get(TestCase):
 
+    @classmethod
+    def tearDownClass(cls) -> None:
+        assert Deploy_Lambda(run).delete() is True
 
     def setUp(self) -> None:
         load_dotenv()

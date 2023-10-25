@@ -1,14 +1,13 @@
-from unittest import TestCase
-
-from dotenv import load_dotenv
-from osbot_utils.testing.Trace_Call import trace_calls
-
-from osbot_aws.deploy.Deploy_Lambda import Deploy_Lambda
-
-from osbot_lambdas.hello_world.handler import run
+from unittest                           import TestCase
+from dotenv                             import load_dotenv
+from osbot_aws.deploy.Deploy_Lambda     import Deploy_Lambda
+from osbot_lambdas.hello_world.handler  import run
 
 class test_hello_world(TestCase):
 
+    @classmethod
+    def tearDownClass(cls) -> None:
+        assert Deploy_Lambda(run).delete() is True
 
     def setUp(self) -> None:
         load_dotenv()

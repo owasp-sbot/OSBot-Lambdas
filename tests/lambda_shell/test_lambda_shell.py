@@ -10,6 +10,10 @@ from osbot_lambdas.lambda_shell.handler     import run
 
 class test_lambda_shell(TestCase):
 
+    @classmethod
+    def tearDownClass(cls) -> None:
+        assert Deploy_Lambda(run).delete() is True
+
     def setUp(self) -> None:
         load_dotenv()
         self.handler_run   = run
