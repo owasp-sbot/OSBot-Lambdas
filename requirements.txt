@@ -3,6 +3,8 @@ git+https://github.com/owasp-sbot/OSBot-AWS.git@dev
 git+https://github.com/owasp-sbot/OSBot-Docker.git@dev
 git+https://github.com/owasp-sbot/OSBot-Utils.git@dev
 
+# docker
+docker
 
 # utils
 python-dotenv
