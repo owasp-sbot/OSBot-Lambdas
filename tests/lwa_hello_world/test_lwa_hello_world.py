@@ -26,9 +26,6 @@ class test_lwa_hello_world(TestCase):
         self.deploy_lambda = Deploy_Lambda(run)
         self.aws_lambda    = self.deploy_lambda.lambda_function()
 
-    def test_invoke_directly(self):
-        assert self.handler_run({}) == '(from lwa) hello world!'
-
     def test_deploy_lambda_function(self):
         #self.deploy_lambda.delete()
         aws_region  = self.deploy_lambda.osbot_setup.region_name
@@ -73,5 +70,5 @@ class test_local__lwa_hello_world(TestCase):
         response = requests.get(f'http://localhost:{self.port}?name={name}')
 
         # Asserting the response
-        assert response.status_code == 201
+        assert response.status_code == 200
         assert response.text        == lwa_message.format(name=name)

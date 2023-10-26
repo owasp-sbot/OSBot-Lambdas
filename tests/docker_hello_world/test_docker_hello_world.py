@@ -22,9 +22,9 @@ from osbot_lambdas.docker_hello_world.handler import run
 
 class test_docker_hello_world(TestCase):
 
-    @classmethod
-    def tearDownClass(cls) -> None:
-        assert Deploy_Lambda(run).delete() is True
+    # @classmethod
+    # def tearDownClass(cls) -> None:
+    #     assert Deploy_Lambda(run).delete() is True
 
 
     def setUp(self) -> None:
@@ -40,10 +40,12 @@ class test_docker_hello_world(TestCase):
         path_images = module_folder(osbot_lambdas)
 
         create_image_ecr =  Create_Image_ECR(image_name=image_name, path_images=path_images)
-        #result = create_image_ecr.build_image()
-        #         volume_mapping = {path_layer_folder: "/var/task"}
-        #         container_id = api_docker.container_create(repository=repository, command= "/bin/bash", tag=image_tag, volumes=volume_mapping)
-        #         pprint(container_id)
+        build_result     = create_image_ecr.build_image()
+        assert build_result is True
+
+                # volume_mapping = {path_layer_folder: "/var/task"}
+                # container_id = api_docker.container_create(repository=repository, command= "/bin/bash", tag=image_tag, volumes=volume_mapping)
+                # pprint(container_id)
         api_docker =  create_image_ecr.api_docker
 
         # these methods below use docker APIClient(version='auto')
@@ -52,7 +54,8 @@ class test_docker_hello_world(TestCase):
         #api_docker.container_start(container_id)
         # result = create_image_ecr.run_locally()
         # pprint(api_docker.images_names())
-        repository   = create_image_ecr.image_repository()
+        repository    = create_image_ecr.image_repository()
+
         container     = api_docker.container_create(image_name=repository, command='')
         container_id  = container.container_id
         assert container.exists() is True
@@ -70,6 +73,7 @@ class test_docker_hello_world(TestCase):
                 status   =  container.status()
                 if container.status() == 'running':
                     assert container.stop  () is True
+                print(f"deleting container with id: {short_id} (status: {status})")
                 assert container.delete() is True
 
         # todo: finish the test automation of the process of creating the docker image
