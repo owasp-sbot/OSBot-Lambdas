@@ -16,10 +16,12 @@ class Flask_App:
             return "Hello World!"
         return app
 
-app = Flask_App().setup()
+app = None
 
 @lambda_shell
 def run(event, context=None):
+    global app
+    app = Flask_App().setup()
     from serverless_wsgi import handle_request
     if event.get('headers'   ) is None: event['headers'   ] = []
     if event.get('httpMethod') is None: event['httpMethod'] = 'GET'
