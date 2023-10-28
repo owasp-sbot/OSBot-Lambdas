@@ -46,19 +46,11 @@ class test_lwa_flask_hello_world(TestCase):
     def test_invoke_lambda_function(self):
         #result = self.deploy_lambda.lambda_function().invoke_return_logs()    # use this to get the lambda full server logs
         expected_message = "Hello from lwa_flask_hello_world lambda"
-        result = self.deploy_lambda.invoke()
-        assert result.get('statusCode') == 200
-        assert result.get('body'      ) == expected_message
-        assert result.get('headers'   ).get('server') == 'Werkzeug/2.1.2 Python/3.11.6'
+        function_url     = self.deploy_lambda.lambda_function().function_url()
+        result_invoke    = self.deploy_lambda.invoke()
 
-        function_url = self.deploy_lambda.lambda_function().function_url()
-        pprint(f'The function url is: {function_url}')
+        assert result_invoke.get('statusCode') == 200
+        assert result_invoke.get('body'      ) == expected_message
+        assert result_invoke.get('headers'   ).get('server') == 'Werkzeug/2.1.2 Python/3.11.6'
+
         assert GET(function_url) == expected_message
-
-
-
-        # assert result.get('statusCode') == 200
-        # assert result.get('headers').get('server') == 'SimpleHTTP/0.6 Python/3.11.6'
-        # body = result.get('body')
-        # assert '<title>Directory listing for /</title>' in body
-        # assert '<li><a href="opt/">opt/</a></li>'       in body
