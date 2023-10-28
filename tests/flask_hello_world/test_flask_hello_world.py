@@ -1,9 +1,8 @@
-import json
 from unittest                                   import TestCase
+from urllib.error import HTTPError
+
 from dotenv                                     import load_dotenv
 from osbot_utils.utils.Http import GET
-
-from osbot_utils.utils.Dev                      import pprint
 from osbot_aws.deploy.Deploy_Lambda             import Deploy_Lambda
 from osbot_aws.helpers.Lambda_Layers_OSBot      import Lambda_Layers_OSBot
 from osbot_lambdas.flask_hello_world.handler    import run
@@ -52,6 +51,7 @@ class test_flask_hello_world(TestCase):
             endpoint_url = '/new_endpoint'
             if endpoint_url in current_urls:
                 return current_urls
+
             def new_endpoint():
                 return 'Hello from the new endpoint!'
 
@@ -88,3 +88,10 @@ class test_flask_hello_world(TestCase):
         function_url = lambda_function.function_url()
 
         assert GET(function_url) == 'Hello World!'
+        try:
+            assert GET(function_url+'aaaa') == 'Hello World!'
+        except HTTPError as http_error:
+            from osbot_utils.utils.Misc import obj_info
+            assert http_error.status == 404
+            assert http_error.msg    == 'Not Found'
+        assert GET(function_url+'new_endpoint') == 'Hello from the new endpoint!'
