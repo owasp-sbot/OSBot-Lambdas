@@ -1,6 +1,7 @@
 from unittest                                   import TestCase
 from urllib.error import HTTPError
 
+import pytest
 from dotenv                                     import load_dotenv
 from osbot_utils.utils.Dev import pprint
 
@@ -12,9 +13,9 @@ from osbot_lambdas.flask_hello_world.handler    import run
 
 class test_flask_hello_world(TestCase):
 
-    # @classmethod
-    # def tearDownClass(cls) -> None:
-    #     assert Deploy_Lambda(run).delete() is True
+    @classmethod
+    def tearDownClass(cls) -> None:
+        assert Deploy_Lambda(run).delete() is True
 
     def setUp(self) -> None:
         load_dotenv()
@@ -29,6 +30,7 @@ class test_flask_hello_world(TestCase):
         assert self.deploy_lambda.update() == 'Successful'
         self.test_invoke_lambda_function()
 
+    @pytest.mark.skip("can't run on CI because Flask dependency is not installed")
     def test_invoke_directly(self):
         assert self.handler_run({}) == { 'body'           : 'Hello World!'                          ,
                                          'headers'        : {'Content-Length': '12'                 ,
