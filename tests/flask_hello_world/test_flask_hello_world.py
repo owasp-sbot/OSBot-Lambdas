@@ -2,6 +2,8 @@ from unittest                                   import TestCase
 from urllib.error import HTTPError
 
 from dotenv                                     import load_dotenv
+from osbot_utils.utils.Dev import pprint
+
 from osbot_utils.utils.Http import GET
 from osbot_aws.deploy.Deploy_Lambda             import Deploy_Lambda
 from osbot_aws.helpers.Lambda_Layers_OSBot      import Lambda_Layers_OSBot
@@ -10,9 +12,9 @@ from osbot_lambdas.flask_hello_world.handler    import run
 
 class test_flask_hello_world(TestCase):
 
-    @classmethod
-    def tearDownClass(cls) -> None:
-        assert Deploy_Lambda(run).delete() is True
+    # @classmethod
+    # def tearDownClass(cls) -> None:
+    #     assert Deploy_Lambda(run).delete() is True
 
     def setUp(self) -> None:
         load_dotenv()
@@ -45,6 +47,22 @@ class test_flask_hello_world(TestCase):
         assert self.deploy_lambda.invoke(     ) == expected_response
 
     def test_lambda_shell_invoke(self):
+
+        def run_in_lambda():
+            return 42
+
+        assert self.lambda_shell.exec_function(run_in_lambda) == 42     # confirm lambda_shell is working ok
+
+        result = self.deploy_lambda.invoke()                            # this will activate the lambda and populate the app value
+        assert result.get('body') == 'Hello World!'
+
+        def get_app_variable():
+            from osbot_lambdas.flask_hello_world.handler import app
+            return f"{app}"
+        assert self.lambda_shell.exec_function(get_app_variable) == "<Flask 'osbot_lambdas.flask_hello_world.handler'>"
+
+
+    def test_lambda_shell_invoke__add_new_flask_endpoint(self):
         def add_new_endpoint():
             from osbot_lambdas.flask_hello_world.handler import app
             current_urls = [rule.rule for rule in app.url_map.iter_rules()]
