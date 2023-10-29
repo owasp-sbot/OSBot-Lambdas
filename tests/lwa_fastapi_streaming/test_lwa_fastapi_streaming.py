@@ -16,9 +16,9 @@ from osbot_lambdas.lwa_fastapi_streaming.handler    import run
 
 class test_lwa_fastapi_streaming(TestCase):
 
-    # @classmethod
-    # def tearDownClass(cls) -> None:
-    #     assert Deploy_Lambda(run).delete() is True
+    @classmethod
+    def tearDownClass(cls) -> None:
+        assert Deploy_Lambda(run).delete() is True
 
     def setUp(self) -> None:
         load_dotenv()

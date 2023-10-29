@@ -16,9 +16,9 @@ from osbot_lambdas.lwa_hello_world.handler import run, lwa_message, MyHandler
 
 class test_lwa_hello_world(TestCase):
 
-    # @classmethod
-    # def tearDownClass(cls) -> None:
-    #     assert Deploy_Lambda(run).delete() is True
+    @classmethod
+    def tearDownClass(cls) -> None:
+        assert Deploy_Lambda(run).delete() is True
 
     def setUp(self) -> None:
         load_dotenv()
