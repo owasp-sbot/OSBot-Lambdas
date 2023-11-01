@@ -48,6 +48,7 @@ class test_flask_hello_world(TestCase):
         assert self.deploy_lambda.invoke(event) == expected_response
         assert self.deploy_lambda.invoke(     ) == expected_response
 
+    # note: every now and then this test fails in CI (but passes on another runs))
     def test_lambda_shell_invoke(self):
 
         def run_in_lambda():
@@ -63,7 +64,7 @@ class test_flask_hello_world(TestCase):
             return f"{app}"
         assert self.lambda_shell.exec_function(get_app_variable) == "<Flask 'osbot_lambdas.flask_hello_world.handler'>"
 
-
+    # note: every now and then this test fails in CI (but passes on another runs))
     def test_lambda_shell_invoke__add_new_flask_endpoint(self):
         def add_new_endpoint():
             from osbot_lambdas.flask_hello_world.handler import app
