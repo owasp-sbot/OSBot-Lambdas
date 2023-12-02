@@ -50,4 +50,4 @@ class test_Build_Deploy__Docker_Playwright(TestCase):
 
     def test_path_dockerfile(self):
         assert file_exists(self.build_deploy.path_dockerfile())
-        assert file_name  (self.build_deploy.path_dockerfile()) == 'Dockerfile'
+        assert file_name  (self.build_deploy.path_dockerfile()) == 'dockerfile'

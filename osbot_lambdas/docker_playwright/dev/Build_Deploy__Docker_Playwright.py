@@ -36,7 +36,7 @@ class Build_Deploy__Docker_Playwright:
         return docker_playwright.path
 
     def path_dockerfile(self):
-        return f'{self.path_docker_playwright()}/Dockerfile'
+        return f'{self.path_docker_playwright()}/dockerfile'
 
     def repository(self):
         return self.create_image_ecr.image_repository()
