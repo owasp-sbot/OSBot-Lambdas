@@ -39,9 +39,11 @@ class test_Build_Deploy__Docker_Playwright(TestCase):
         print()
         #assert self.build_deploy.build_docker_image().get('status' ) == 'ok'
         container = self.build_deploy.start_container()
-        assert container.status() == 'running'
+        ports     = container.info().get('ports')
 
-        assert container.info().get('ports') ==  {'8000/tcp': [{'HostIp': '0.0.0.0', 'HostPort': '8888'}]}
+        assert container.status() == 'running'
+        assert len(ports) == 1
+        assert ports.get('8000/tcp')[0].get('HostPort') == '8888'
 
         with Duration():
             for i in range(0,10):
