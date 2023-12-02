@@ -1,9 +1,11 @@
+import requests
 from unittest import TestCase
-
-from osbot_aws.AWS_Config import AWS_Config
 from osbot_lambdas.docker_playwright.dev.Build_Deploy__Docker_Playwright import Build_Deploy__Docker_Playwright
+from osbot_utils.testing.Duration import Duration
 from osbot_utils.utils.Dev import pprint
 from osbot_utils.utils.Files import folder_exists, folder_name, file_exists, file_name
+from osbot_utils.utils.Http import wait_for_port
+from osbot_utils.utils.Misc import wait_for
 
 
 class test_Build_Deploy__Docker_Playwright(TestCase):
@@ -34,8 +36,33 @@ class test_Build_Deploy__Docker_Playwright(TestCase):
         assert len(self.build_deploy.created_containers().items()) == 0
 
     def test_start_container(self):
+        print()
+        #assert self.build_deploy.build_docker_image().get('status' ) == 'ok'
         container = self.build_deploy.start_container()
         assert container.status() == 'running'
+
+        assert container.info().get('ports') ==  {'8000/tcp': [{'HostIp': '0.0.0.0', 'HostPort': '8888'}]}
+
+        with Duration():
+            for i in range(0,10):
+                if 'Uvicorn running on ' in container.logs():
+                    pprint(container.logs())
+                    break
+                print(f'[{i}] waiting for Uvicorn running on in container logs')
+                wait_for(0.1)
+        #pprint(container.logs())
+
+        url = "http://localhost:8888"
+
+        response = requests.get(url)
+        assert response.status_code == 200
+        assert response.text == '{"message":"Hello from docked_playwright lambda!!"}'
+
+        # pprint(container.logs())
+        # wait_for(1)
+        # pprint(container.logs())
+        # wait_for(1)
+
         assert container.stop() is True
         assert container.status() == 'exited'
         assert container.delete() is True

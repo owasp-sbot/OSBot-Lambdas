@@ -6,7 +6,9 @@ ENV PORT=8000
 WORKDIR /var/task
 COPY requirements.txt ./
 RUN python -m pip install -r requirements.txt
-run playwright install chromium
+#RUN playwright install chromium
 COPY *.py ./
 
-CMD exec uvicorn --host='0.0.0.0' --reload  --port=$PORT main:app
+#CMD exec uvicorn --host='0.0.0.0' --reload  --port=$PORT main:app
+CMD exec python3 handler.py
+

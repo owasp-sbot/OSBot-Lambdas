@@ -18,7 +18,8 @@ class Build_Deploy__Docker_Playwright:
         return self.create_image_ecr.build_image()
 
     def create_container(self):
-        return  self.api_docker().container_create(image_name=self.repository(), command='')
+        port_bindings = {8000: 8888}
+        return  self.api_docker().container_create(image_name=self.repository(), command='', port_bindings=port_bindings)
 
     def created_containers(self):
         created_containers = {}
