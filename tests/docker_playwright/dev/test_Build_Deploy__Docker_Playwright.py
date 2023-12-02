@@ -33,6 +33,14 @@ class test_Build_Deploy__Docker_Playwright(TestCase):
         assert container.delete() is True
         assert len(self.build_deploy.created_containers().items()) == 0
 
+    def test_start_container(self):
+        container = self.build_deploy.start_container()
+        assert container.status() == 'running'
+        assert container.stop() is True
+        assert container.status() == 'exited'
+        assert container.delete() is True
+
+
     def test_dockerfile(self):
         assert self.build_deploy.dockerfile().startswith('FROM mcr.microsoft.com/playwright/python:v1.40.0-jammy')
 

@@ -40,3 +40,8 @@ class Build_Deploy__Docker_Playwright:
 
     def repository(self):
         return self.create_image_ecr.image_repository()
+
+    def start_container(self):
+        container = self.create_container()
+        container.start()
+        return container
