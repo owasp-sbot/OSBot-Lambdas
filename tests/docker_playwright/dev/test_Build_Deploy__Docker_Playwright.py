@@ -1,5 +1,7 @@
 import requests
 from unittest import TestCase
+
+from osbot_aws.apis.Lambda import Lambda
 from osbot_lambdas.docker_playwright.dev.Build_Deploy__Docker_Playwright import Build_Deploy__Docker_Playwright
 from osbot_utils.testing.Duration import Duration
 from osbot_utils.utils.Dev import pprint
@@ -35,9 +37,36 @@ class test_Build_Deploy__Docker_Playwright(TestCase):
         assert container.delete() is True
         assert len(self.build_deploy.created_containers().items()) == 0
 
+    def test_create_lambda(self):
+        delete_existing = False
+        wait_for_active = True
+        lambda_function = self.build_deploy.lambda_function()
+        with Duration(prefix='create lambda:'):
+            create_result   = self.build_deploy.create_lambda(delete_existing=delete_existing, wait_for_active=wait_for_active)
+            lambda_info     = lambda_function.info()
+            if delete_existing is True:
+                assert create_result.get('status') == 'ok'
+            assert lambda_info.get('Configuration').get('State') == 'Active'
+
+        with Duration(prefix='invoke lambda 1st:'):
+            invoke_result   = lambda_function.invoke()
+            assert invoke_result.get('body') == '{"message":"Hello from docked_playwright lambda"}'
+
+        with Duration(prefix='invoke lambda 2nd:'):
+            invoke_result   = lambda_function.invoke()
+            assert invoke_result.get('body') == '{"message":"Hello from docked_playwright lambda"}'
+
+        with Duration(prefix='invoke lambda 3rd:'):
+            invoke_result   = lambda_function.invoke()
+            assert invoke_result.get('body') == '{"message":"Hello from docked_playwright lambda"}'
+
+
+    def test_execute_lambda(self):
+        result = self.build_deploy.execute_lambda()
+        assert result.get('body') == '{"message":"Hello from docked_playwright lambda"}'
+
     def test_start_container(self):
-        print()
-        #assert self.build_deploy.build_docker_image().get('status' ) == 'ok'
+        assert self.build_deploy.build_docker_image().get('status' ) == 'ok'
         container = self.build_deploy.start_container()
         ports     = container.info().get('ports')
 
@@ -52,18 +81,12 @@ class test_Build_Deploy__Docker_Playwright(TestCase):
                     break
                 print(f'[{i}] waiting for Uvicorn running on in container logs')
                 wait_for(0.1)
-        #pprint(container.logs())
 
         url = "http://localhost:8888"
 
         response = requests.get(url)
         assert response.status_code == 200
         assert response.text == '{"message":"Hello from docked_playwright lambda!!"}'
-
-        # pprint(container.logs())
-        # wait_for(1)
-        # pprint(container.logs())
-        # wait_for(1)
 
         assert container.stop() is True
         assert container.status() == 'exited'

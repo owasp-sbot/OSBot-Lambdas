@@ -9,11 +9,12 @@ def run():
 
     @app.get("/")
     async def root():
-        print("in root method")
         return {"message": "Hello from docked_playwright lambda!!"}
+
 
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
+
 
 if __name__ == '__main__':
     run()                                  # to be triggered from run.sh
