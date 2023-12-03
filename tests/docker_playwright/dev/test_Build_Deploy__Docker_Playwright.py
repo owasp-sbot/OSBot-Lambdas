@@ -22,6 +22,18 @@ class test_Build_Deploy__Docker_Playwright(TestCase):
         assert type(create_image_ecr).__name__ == 'Create_Image_ECR'
         assert create_image_ecr.image_name     == 'docker_playwright'
 
+    def test_aws_publish(self):
+        result          = self.build_deploy.create_image_ecr.push_image()
+
+        pprint(result)
+
+        auth_result     = result.get('auth_result')
+        push_json_lines = result.get('push_json_lines')
+        assert auth_result.get('Status') ==     'Login Succeeded'
+        assert 'errorDetail'             not in push_json_lines
+
+
+
     def test_build_docker_image(self):
         result = self.build_deploy.build_docker_image()
         assert result.get('status' ) == 'ok'
