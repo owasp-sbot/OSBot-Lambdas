@@ -33,6 +33,10 @@ def run():
         except Exception as error:
             return str(error)
 
+    @app.get("/version")
+    def version():
+        return {"version": "v0.12"}
+
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
 

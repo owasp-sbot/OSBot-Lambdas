@@ -81,3 +81,7 @@ class Build_Deploy__Docker_Playwright:
         container = self.create_container()
         container.start()
         return container
+
+    def update_lambda_function(self):
+        lambda_ = self.lambda_function()
+        return lambda_.update_lambda_image_uri(self.image_uri())

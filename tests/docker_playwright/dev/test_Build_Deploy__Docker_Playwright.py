@@ -23,10 +23,10 @@ class test_Build_Deploy__Docker_Playwright(TestCase):
         assert create_image_ecr.image_name     == 'docker_playwright'
 
     def test_aws_publish(self):
+        build_result = self.build_deploy.build_docker_image()       # make sure the image is built
+        assert build_result.get('status') == 'ok'
+
         result          = self.build_deploy.create_image_ecr.push_image()
-
-        pprint(result)
-
         auth_result     = result.get('auth_result')
         push_json_lines = result.get('push_json_lines')
         assert auth_result.get('Status') ==     'Login Succeeded'
@@ -125,3 +125,7 @@ class test_Build_Deploy__Docker_Playwright(TestCase):
     def test_path_dockerfile(self):
         assert file_exists(self.build_deploy.path_dockerfile())
         assert file_name  (self.build_deploy.path_dockerfile()) == 'dockerfile'
+
+    def test_update_lambda_function(self):
+        result = self.build_deploy.update_lambda_function()
+        assert result.get('State') == 'Active'
