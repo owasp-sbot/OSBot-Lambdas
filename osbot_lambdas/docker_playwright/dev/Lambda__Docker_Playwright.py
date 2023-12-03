@@ -12,6 +12,9 @@ class Lambda__Docker_Playwright:
     def publish_docker_image(self):
         return self.build_deploy.create_image_ecr.push_image()
 
+    def create_lambda_function(self, delete_existing=True, wait_for_active=True):
+        return self.build_deploy.create_lambda(delete_existing=delete_existing, wait_for_active=wait_for_active)
+
     def update_lambda_function(self, wait_for_update=True):
         result = self.build_deploy.update_lambda_function()
         if wait_for_update is False:
@@ -20,7 +23,7 @@ class Lambda__Docker_Playwright:
 
 
     def rebuild_and_publish(self):
-        build_result   =  self.build_docker_image()
+        build_result   = self.build_docker_image()
         publish_result = self.publish_docker_image()
         update_result  = self.update_lambda_function()
         return dict(build_result=build_result, publish_result=publish_result, update_result=update_result)

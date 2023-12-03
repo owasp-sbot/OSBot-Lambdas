@@ -1,3 +1,5 @@
+import platform
+
 import pytest
 import requests
 from unittest import TestCase
@@ -36,11 +38,11 @@ class test_Build_Deploy__Docker_Playwright(TestCase):
         assert 'errorDetail'             not in push_json_lines
 
 
-
     def test_build_docker_image(self):
         result = self.build_deploy.build_docker_image()
         assert result.get('status' ) == 'ok'
         assert result.get('tags')[0] == f'{self.aws_account_id}.dkr.ecr.eu-west-2.amazonaws.com/{self.build_deploy.image_name}:latest'
+        assert result.get('image').get('Architecture') == 'arm64'
 
     def test_create_container(self):
         container    = self.build_deploy.create_container()
@@ -60,7 +62,7 @@ class test_Build_Deploy__Docker_Playwright(TestCase):
             create_result   = self.build_deploy.create_lambda(delete_existing=delete_existing, wait_for_active=wait_for_active)
             lambda_info     = lambda_function.info()
             if delete_existing is True:
-                assert create_result.get('status') == 'ok'
+                assert create_result.get('create_result').get('status') == 'ok'
             assert lambda_info.get('Configuration').get('State') == 'Active'
 
         with Duration(prefix='invoke lambda 1st:'):
@@ -86,6 +88,14 @@ class test_Build_Deploy__Docker_Playwright(TestCase):
 
         assert requests.get(function_url).json() == {'message': 'Hello from docked_playwright lambda!!'}
 
+    def test_image_architecture(self):
+        architecture = self.build_deploy.image_architecture()
+
+        if platform.system() == 'Darwin':                                                   # Determine the expected architecture based on the platform.
+            expected_architecture = 'arm64' if platform.machine() == 'arm64' else 'amd64'   # Mac OS X systems
+        else:
+            expected_architecture = 'amd64'                                                 # Default to 'amd64' for other systems like GitHub Actions CI
+        assert architecture == expected_architecture
 
     def test_execute_lambda(self):
         result = self.build_deploy.execute_lambda()

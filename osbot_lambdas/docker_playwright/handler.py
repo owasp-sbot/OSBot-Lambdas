@@ -35,7 +35,7 @@ def run():
 
     @app.get("/version")
     def version():
-        return {"version": "v0.12"}
+        return {"version": "v0.13"}
 
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)

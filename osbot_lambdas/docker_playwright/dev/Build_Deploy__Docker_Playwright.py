@@ -1,3 +1,5 @@
+import os
+
 from osbot_aws.deploy.Deploy_Lambda import Deploy_Lambda
 from osbot_aws.helpers.Create_Image_ECR import Create_Image_ECR
 from osbot_lambdas import docker_playwright
@@ -16,6 +18,9 @@ class Build_Deploy__Docker_Playwright:
         self.create_image_ecr =  Create_Image_ECR(image_name=self.image_name, path_images=self.path_images)
         self.deploy_lambda    =  Deploy_Lambda(run)
 
+        # set the default platform to linux/amd64
+        #os.environ['DOCKER_DEFAULT_PLATFORM'] = 'linux/amd64'
+
     def api_docker(self):
         return self.create_image_ecr.api_docker
 
@@ -24,7 +29,7 @@ class Build_Deploy__Docker_Playwright:
 
     def create_container(self):
         port_bindings = {8000: 8888}
-        labels        = {"source": "build_deploy__docker_playwright"}
+        #labels        = {"source": "build_deploy__docker_playwright"}
         return  self.api_docker().container_create(image_name=self.repository(), command='', port_bindings=port_bindings)
 
     def created_containers(self):
@@ -37,29 +42,31 @@ class Build_Deploy__Docker_Playwright:
         return created_containers
 
     def create_lambda(self, delete_existing=False, wait_for_active=False):
-        with Duration(prefix='create lambda > delete and create:'):
+        with Duration(prefix='[create_lambda] | delete and create:'):
             lambda_function              = self.lambda_function()
             lambda_function.image_uri    = self.image_uri()
-            lambda_function.architecture = 'arm64'
+            lambda_function.architecture = self.image_architecture()
             if delete_existing:
                 lambda_function.delete()
-            result = lambda_function.create()
+            create_result = lambda_function.create()
         if wait_for_active:
-            with Duration(prefix='create lambda > wait for active:'):
+            with Duration(prefix='[create_lambda] | wait for active:'):
                 lambda_function.wait_for_state_active(max_wait_count=80)
-        return result
+        function_url = self.create_lambda_function_url()
+        return dict(create_result=create_result, function_url=function_url)
 
     def create_lambda_function_url(self):
-        lambda_ = self.lambda_function()
-        if lambda_.function_url_exists() is False:
-            lambda_.function_url_create_with_public_access()
-        else:
-            pprint("[create_lambda_function_url] skipping since function_url already existed")
+        lambda_           = self.lambda_function()
+        lambda_.function_url_delete()                           # due to the bug in AWS it is better to delete and recreate it
+        lambda_.function_url_create_with_public_access()
         return lambda_.function_url_info()
 
-    def execute_lambda(self):
+    def image_architecture(self):
+        return self.create_image_ecr.docker_image.architecture()
+
+    def execute_lambda(self,payload=None):
         lambda_function = self.lambda_function()
-        result = lambda_function.invoke()
+        result = lambda_function.invoke(payload=payload)
         return result
 
     def lambda_function(self):
