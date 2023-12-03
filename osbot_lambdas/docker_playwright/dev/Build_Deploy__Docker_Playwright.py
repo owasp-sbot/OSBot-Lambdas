@@ -5,6 +5,7 @@ from osbot_lambdas.docker_playwright.handler import run
 from osbot_utils.testing.Duration import Duration
 from osbot_utils.utils.Dev import pprint
 from osbot_utils.utils.Files import file_contents, parent_folder
+from osbot_utils.utils.Misc import wait_for
 
 
 class Build_Deploy__Docker_Playwright:
@@ -52,6 +53,8 @@ class Build_Deploy__Docker_Playwright:
         lambda_ = self.lambda_function()
         if lambda_.function_url_exists() is False:
             lambda_.function_url_create_with_public_access()
+        else:
+            pprint("[create_lambda_function_url] skipping since function_url already existed")
         return lambda_.function_url_info()
 
     def execute_lambda(self):
