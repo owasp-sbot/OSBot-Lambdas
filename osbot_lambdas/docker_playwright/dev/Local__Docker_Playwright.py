@@ -47,10 +47,19 @@ class Local__Docker_Playwright:
         self.container.delete()
 
     def GET(self, path=''):
+        url = self.local_url(path)
+        return requests.get(url).text
+
+    def POST(self, path='', data=None):
+        url     = self.local_url(path)
+        headers = { 'Content-Type': 'application/json'}
+        return requests.post(url, data=data, headers=headers).text
+
+    def local_url(self, path):
         if path.startswith('/') is False:
             path = f'/{path}'
         local_url = f'http://localhost:{self.local_port}{path}'
-        return requests.get(local_url).text
+        return local_url
 
     def setup(self):
         self.container = self.create_or_reuse_container()                         # make sure we have at least one running

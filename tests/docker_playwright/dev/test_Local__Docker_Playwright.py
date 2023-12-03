@@ -28,6 +28,10 @@ class test_Local__Docker_Playwright(TestCase):
         assert self.local_docker.GET('/') == '{"message":"Hello from docked_playwright lambda!!"}'
         assert 'GET / HTTP/1.1" 200 OK\n' in container.logs()
 
+
+        pprint(self.local_docker.POST('/lambda-shell'), {})
+
+
         self.local_docker.delete_container()
         assert len(self.local_docker.containers_with_label()) == 0
 

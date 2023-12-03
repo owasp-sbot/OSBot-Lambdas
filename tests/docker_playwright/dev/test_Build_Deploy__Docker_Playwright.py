@@ -62,20 +62,20 @@ class test_Build_Deploy__Docker_Playwright(TestCase):
 
         with Duration(prefix='invoke lambda 1st:'):
             invoke_result   = lambda_function.invoke()
-            assert invoke_result.get('body') == '{"message":"Hello from docked_playwright lambda"}'
+            assert invoke_result.get('body') == '{"message":"Hello from docked_playwright lambda!!"}'
 
         with Duration(prefix='invoke lambda 2nd:'):
             invoke_result   = lambda_function.invoke()
-            assert invoke_result.get('body') == '{"message":"Hello from docked_playwright lambda"}'
+            assert invoke_result.get('body') == '{"message":"Hello from docked_playwright lambda!!"}'
 
         with Duration(prefix='invoke lambda 3rd:'):
             invoke_result   = lambda_function.invoke()
-            assert invoke_result.get('body') == '{"message":"Hello from docked_playwright lambda"}'
+            assert invoke_result.get('body') == '{"message":"Hello from docked_playwright lambda!!"}'
 
 
     def test_execute_lambda(self):
         result = self.build_deploy.execute_lambda()
-        assert result.get('body') == '{"message":"Hello from docked_playwright lambda"}'
+        assert result.get('body') == '{"message":"Hello from docked_playwright lambda!!"}'
 
     def test_start_container(self):
         assert self.build_deploy.build_docker_image().get('status' ) == 'ok'
