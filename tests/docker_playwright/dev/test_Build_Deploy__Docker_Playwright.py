@@ -72,6 +72,16 @@ class test_Build_Deploy__Docker_Playwright(TestCase):
             invoke_result   = lambda_function.invoke()
             assert invoke_result.get('body') == '{"message":"Hello from docked_playwright lambda!!"}'
 
+    def test_create_lambda_function_url(self):
+        result       = self.build_deploy.create_lambda_function_url()
+        function_url = result.get('FunctionUrl')
+        assert result.get('AuthType'   ) == 'NONE'
+        assert result.get('FunctionArn') == 'arn:aws:lambda:eu-west-2:470426667096:function:osbot_lambdas_docker_playwright_handler'
+        assert result.get('InvokeMode' ) == 'BUFFERED'
+        assert function_url.endswith('.lambda-url.eu-west-2.on.aws/')
+
+        assert requests.get(function_url).json() == {'message': 'Hello from docked_playwright lambda!!'}
+
 
     def test_execute_lambda(self):
         result = self.build_deploy.execute_lambda()

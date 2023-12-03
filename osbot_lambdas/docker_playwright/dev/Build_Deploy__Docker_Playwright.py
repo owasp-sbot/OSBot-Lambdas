@@ -48,6 +48,12 @@ class Build_Deploy__Docker_Playwright:
                 lambda_function.wait_for_state_active(max_wait_count=80)
         return result
 
+    def create_lambda_function_url(self):
+        lambda_ = self.lambda_function()
+        if lambda_.function_url_exists() is False:
+            lambda_.function_url_create_with_public_access()
+        return lambda_.function_url_info()
+
     def execute_lambda(self):
         lambda_function = self.lambda_function()
         result = lambda_function.invoke()
