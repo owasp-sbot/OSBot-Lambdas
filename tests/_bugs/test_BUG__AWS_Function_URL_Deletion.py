@@ -1,5 +1,5 @@
+import requests
 from unittest                                   import TestCase
-from modules._lambda_dependencies.requests      import requests
 from osbot_aws.AWS_Config                       import AWS_Config
 from osbot_aws.apis.Lambda                      import Lambda
 from osbot_aws.apis.test_helpers.Temp_Lambda    import Temp_Lambda
@@ -124,12 +124,12 @@ class test_BUG__AWS_Function_URL_Deletion(TestCase):
             assert requests.get(new_function_url).text == '{"Message":"Forbidden"}'         # BUG: this should also not be available
         return
 
-    # execution results
-    # [1st] Create and delete lambda function                           4s 502ms
-    # [2nd] Create test and delete lambda function                      2s 473ms
-    # [3rd] Create and delete lambda function                           2s 485ms
-    # [4th] (after deletion) Create Lambda function and FunctionUrl     3s 875ms
-    # [5th] Wait until the old function URL is deleted                  50s 371ms
+    # execution results                                               (local run #1) | (local run #2)
+    # [1st] Create and delete lambda function                           4s 502ms     |  4s 400ms
+    # [2nd] Create test and delete lambda function                      2s 473ms     |  2s 413ms
+    # [3rd] Create and delete lambda function                           2s 485ms     |  2s 593ms
+    # [4th] (after deletion) Create Lambda function and FunctionUrl     3s 875ms     |  3s 427ms
+    # [5th] Wait until the old function URL is deleted                  50s 371ms    |  50s 501ms
 
     def test_bug__aws_race_condition_on_url_function__wait_for_deletion(self):
         lambda_name = "temp_lambda_to_debug_function_url_race_condition_v2"
@@ -158,4 +158,7 @@ class test_BUG__AWS_Function_URL_Deletion(TestCase):
                 lambda_function = temp_lambda.aws_lambda
                 assert lambda_function.function_url_exists() is False                       # now the function URL doesn't exist
 
-    # execution results
+    # execution results                                                (local run #1)  | (local run #2)
+    # [1st] Create lambda and function URL (and delete function)         3s 338ms      |   3s 623ms
+    # [2nd] Wait for function URL deletion                              60s 468ms      |  60s 506ms
+    # [3rd] Create lambda (and delete function)                          3s 192ms      |   2s 789ms
