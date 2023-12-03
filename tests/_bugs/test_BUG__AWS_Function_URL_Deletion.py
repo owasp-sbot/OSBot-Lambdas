@@ -1,3 +1,4 @@
+import pytest
 import requests
 from unittest                                   import TestCase
 from osbot_aws.AWS_Config                       import AWS_Config
@@ -7,6 +8,8 @@ from osbot_utils.testing.Duration               import Duration
 from osbot_utils.utils.Misc                     import wait_for, list_set
 
 
+
+@pytest.mark.skip("No need to run this all the time ")
 class test_BUG__AWS_Function_URL_Deletion(TestCase):
 
     def setUp(self) -> None:

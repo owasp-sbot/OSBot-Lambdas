@@ -1,13 +1,16 @@
+import pytest
 import requests
 from unittest import TestCase
 
+from osbot_aws.AWS_Config import AWS_Config
 from osbot_aws.apis.Lambda import Lambda
+from osbot_aws.apis.test_helpers.Temp_Lambda import Temp_Lambda
 from osbot_lambdas.docker_playwright.dev.Build_Deploy__Docker_Playwright import Build_Deploy__Docker_Playwright
 from osbot_utils.testing.Duration import Duration
 from osbot_utils.utils.Dev import pprint
 from osbot_utils.utils.Files import folder_exists, folder_name, file_exists, file_name
 from osbot_utils.utils.Http import wait_for_port
-from osbot_utils.utils.Misc import wait_for
+from osbot_utils.utils.Misc import wait_for, obj_info, list_set
 
 
 class test_Build_Deploy__Docker_Playwright(TestCase):
@@ -50,7 +53,7 @@ class test_Build_Deploy__Docker_Playwright(TestCase):
         assert len(self.build_deploy.created_containers().items()) == 0
 
     def test_create_lambda(self):
-        delete_existing = False
+        delete_existing = True
         wait_for_active = True
         lambda_function = self.build_deploy.lambda_function()
         with Duration(prefix='create lambda:'):
@@ -74,6 +77,7 @@ class test_Build_Deploy__Docker_Playwright(TestCase):
 
     def test_create_lambda_function_url(self):
         result       = self.build_deploy.create_lambda_function_url()
+
         function_url = result.get('FunctionUrl')
         assert result.get('AuthType'   ) == 'NONE'
         assert result.get('FunctionArn') == 'arn:aws:lambda:eu-west-2:470426667096:function:osbot_lambdas_docker_playwright_handler'
@@ -127,5 +131,6 @@ class test_Build_Deploy__Docker_Playwright(TestCase):
         assert file_name  (self.build_deploy.path_dockerfile()) == 'dockerfile'
 
     def test_update_lambda_function(self):
+        #pprint(self.build_deploy.lambda_function().info())
         result = self.build_deploy.update_lambda_function()
         assert result.get('State') == 'Active'
