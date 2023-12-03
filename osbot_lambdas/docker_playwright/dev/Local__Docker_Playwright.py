@@ -44,7 +44,7 @@ class Local__Docker_Playwright:
 
     def delete_container(self):
         self.container.stop()
-        self.container.delete()
+        return self.container.delete()
 
     def GET(self, path=''):
         url = self.local_url(path)
