@@ -5,15 +5,15 @@ from osbot_aws.helpers.Create_Image_ECR import Create_Image_ECR
 from osbot_lambdas import docker_python
 from osbot_lambdas.docker_python.app import lambda_handler
 
-from osbot_utils.utils.Files import parent_folder
+from osbot_utils.utils.Files import parent_folder, folder_name
 from osbot_utils.utils.Misc import random_port
 
 
-class Build_Deploy__Docker_Python:
+class Lambda_Using_Docker:
 
-    def __init__(self):
-        self.image_name       = 'docker_python'
-        self.path_images      = parent_folder(docker_python.path)
+    def __init__(self, target):
+        self.image_name       = folder_name(target.path)
+        self.path_images      = parent_folder(target.path)
         self.create_image_ecr = Create_Image_ECR(image_name=self.image_name, path_images=self.path_images)
         self.api_docker       = self.create_image_ecr.api_docker
         self.deploy_lambda    = Deploy_Lambda(lambda_handler)

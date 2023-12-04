@@ -27,16 +27,6 @@ class test_Build_Deploy__Docker_Playwright(TestCase):
         assert type(create_image_ecr).__name__ == 'Create_Image_ECR'
         assert create_image_ecr.image_name     == 'docker_playwright'
 
-    def test_aws_publish(self):
-        build_result = self.build_deploy.build_docker_image()       # make sure the image is built
-        assert build_result.get('status') == 'ok'
-
-        result          = self.build_deploy.create_image_ecr.push_image()
-        auth_result     = result.get('auth_result')
-        push_json_lines = result.get('push_json_lines')
-        assert auth_result.get('Status') ==     'Login Succeeded'
-        assert 'errorDetail'             not in push_json_lines
-
 
     def test_build_docker_image(self):
         result = self.build_deploy.build_docker_image()
@@ -144,3 +134,14 @@ class test_Build_Deploy__Docker_Playwright(TestCase):
         #pprint(self.build_deploy.lambda_function().info())
         result = self.build_deploy.update_lambda_function()
         assert result.get('State') == 'Active'
+
+    # todo: add sequence to this file and make this the last one
+    def test_aws_publish(self):
+        build_result = self.build_deploy.build_docker_image()       # make sure the image is built
+        assert build_result.get('status') == 'ok'
+
+        result          = self.build_deploy.create_image_ecr.push_image()
+        auth_result     = result.get('auth_result')
+        push_json_lines = result.get('push_json_lines')
+        assert auth_result.get('Status') ==     'Login Succeeded'
+        assert 'errorDetail'             not in push_json_lines
