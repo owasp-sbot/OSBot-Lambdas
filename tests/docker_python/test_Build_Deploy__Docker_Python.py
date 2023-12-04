@@ -2,6 +2,7 @@ import requests
 from unittest import TestCase
 
 from osbot_lambdas.docker_python.dev.Build_Deploy__Docker_Python import Build_Deploy__Docker_Python
+from osbot_utils.utils.Dev import pprint
 from osbot_utils.utils.Files import folder_name
 from osbot_utils.utils.Misc  import random_port
 
@@ -45,7 +46,22 @@ class test_Build_Deploy__Docker_Python(TestCase):
 
     def test_e__create_lambda(self):
         result = self.docker_python.create_lambda()
-        assert result == 42         # todo: finish function
+        assert result.get('Code'         ).get('RepositoryType') == 'ECR'
+        assert result.get('Configuration').get('State'         ) == 'Active'
+
+    def test_f__invoke_lambda(self):
+        result = self.docker_python.invoke_lambda()
+        assert result == {'body': 'Hello from Lambda!', 'statusCode': 200}
+
+    def test_g__delete_lambda(self):
+        assert self.docker_python.delete_lambda() is True
+        assert self.docker_python.deploy_lambda.lambda_function().exists() is False
+
+    # todo add feature to delete repository (since we also need to delete the images)
+    # def test_h__delete_ecr_repository(self):
+    #     result = self.docker_python.delete_ecr_repository()
+    #     pprint(result)
+
 
 
 
