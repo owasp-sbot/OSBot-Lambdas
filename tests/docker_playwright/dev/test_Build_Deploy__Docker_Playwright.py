@@ -42,7 +42,7 @@ class test_Build_Deploy__Docker_Playwright(TestCase):
         result = self.build_deploy.build_docker_image()
         assert result.get('status' ) == 'ok'
         assert result.get('tags')[0] == f'{self.aws_account_id}.dkr.ecr.eu-west-2.amazonaws.com/{self.build_deploy.image_name}:latest'
-        assert result.get('image').get('Architecture') == 'arm64'
+        assert result.get('image').get('Architecture') == self.build_deploy.image_architecture()
 
     def test_create_container(self):
         container    = self.build_deploy.create_container()
